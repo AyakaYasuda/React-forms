@@ -10,6 +10,11 @@ const SimpleInput = props => {
 
   const formSubmissionHandler = event => {
     event.preventDefault();
+
+    if(enteredName.trim() === '') {
+      return;
+    }
+
     // in case of using State
     console.log('from State: ', enteredName);
     setEnteredName('');
