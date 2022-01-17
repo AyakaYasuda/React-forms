@@ -5,14 +5,27 @@ const SimpleInput = props => {
   const [enteredName, setEnteredName] = useState('');
   const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
-
+  
+  const inputNameIsInvalid = !enteredNameIsValid && enteredNameTouched;
+  const inputNameClasses = inputNameIsInvalid
+    ? 'form-control invalid'
+    : 'form-control';
+    
   const inputNameChangeHangler = event => {
     setEnteredName(event.target.value);
   };
 
+  const inputNameBlurHandler = event => {
+    setEnteredNameTouched(true);
+
+    if (enteredName.trim() === '') {
+      setEnteredNameIsValid(false);
+      return;
+    }
+  };
+
   const formSubmissionHandler = event => {
     event.preventDefault();
-
     setEnteredNameTouched(true);
 
     if (enteredName.trim() === '') {
@@ -31,10 +44,6 @@ const SimpleInput = props => {
     // inputNameRef.current.value = ''; => NOT IDEAL to manipulate DOM through React
   };
 
-  const inputNameIsInvalid = !enteredNameIsValid && enteredNameTouched;
-  const inputNameClasses = inputNameIsInvalid
-    ? 'form-control invalid'
-    : 'form-control';
 
   return (
     <form onSubmit={formSubmissionHandler}>
@@ -45,6 +54,7 @@ const SimpleInput = props => {
           type='text'
           id='name'
           onChange={inputNameChangeHangler}
+          onBlur={inputNameBlurHandler}
           value={enteredName}
         />
         {inputNameIsInvalid && (
