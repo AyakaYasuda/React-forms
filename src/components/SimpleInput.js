@@ -1,56 +1,42 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 const SimpleInput = props => {
-  const inputNameRef = useRef('');
   const [enteredName, setEnteredName] = useState('');
-  const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
-  
+
+  const enteredNameIsValid = enteredName.trim() !== '';
   const inputNameIsInvalid = !enteredNameIsValid && enteredNameTouched;
-  const inputNameClasses = inputNameIsInvalid
-    ? 'form-control invalid'
-    : 'form-control';
-    
+
   const inputNameChangeHangler = event => {
     setEnteredName(event.target.value);
   };
 
   const inputNameBlurHandler = event => {
     setEnteredNameTouched(true);
-
-    if (enteredName.trim() === '') {
-      setEnteredNameIsValid(false);
-      return;
-    }
   };
 
   const formSubmissionHandler = event => {
     event.preventDefault();
     setEnteredNameTouched(true);
 
-    if (enteredName.trim() === '') {
-      setEnteredNameIsValid(false);
+    if (!enteredNameIsValid) {
       return;
     }
-    setEnteredNameIsValid(true);
 
-    // in case of using State
     console.log('from State: ', enteredName);
     setEnteredName('');
-
-    // in case of using Ref
-    const enteredValue = inputNameRef.current.value;
-    console.log('from Ref: ', enteredValue);
-    // inputNameRef.current.value = ''; => NOT IDEAL to manipulate DOM through React
+    setEnteredNameTouched(false);
   };
 
+  const inputNameClasses = inputNameIsInvalid
+    ? 'form-control invalid'
+    : 'form-control';
 
   return (
     <form onSubmit={formSubmissionHandler}>
       <div className={inputNameClasses}>
         <label htmlFor='name'>Your Name</label>
         <input
-          ref={inputNameRef}
           type='text'
           id='name'
           onChange={inputNameChangeHangler}
