@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import useInput from '../hooks/use-input';
 
 const SimpleInput = props => {
@@ -11,24 +10,20 @@ const SimpleInput = props => {
     reset: resetInputName,
   } = useInput(value => value.trim() !== '');
 
-  const [enteredEmail, setEnteredEmail] = useState('');
-  const [enteredEmailTouched, setEnteredEmailTouched] = useState(false);
-  const enteredEmailIsValid = enteredEmail.includes('@');
-  const inputEmailIsInvalid = !enteredEmailIsValid && enteredEmailTouched;
+  const {
+    value: enteredEmail,
+    isValid: enteredEmailIsValid,
+    hasError: inputEmailHasError,
+    valueChangeHangler: emailChangeHandler,
+    inputBlurHandler: emailBlurHandler,
+    reset: resetInputEmail,
+  } = useInput(value => value.includes('@'));
 
   let formIsValid = '';
 
   if (enteredNameIsValid && enteredEmailIsValid) {
     formIsValid = true;
   }
-
-  const inputEmailChangeHangler = event => {
-    setEnteredEmail(event.target.value);
-  };
-
-  const inputEmailBlurHandler = event => {
-    setEnteredEmailTouched(true);
-  };
 
   const formSubmissionHandler = event => {
     event.preventDefault();
@@ -38,16 +33,14 @@ const SimpleInput = props => {
     }
 
     resetInputName();
-
-    setEnteredEmail('');
-    setEnteredEmailTouched(false);
+    resetInputEmail();
   };
 
   const inputNameClasses = inputNameHasError
     ? 'form-control invalid'
     : 'form-control';
 
-  const inputEmailClasses = inputEmailIsInvalid
+  const inputEmailClasses = inputEmailHasError
     ? 'form-control invalid'
     : 'form-control';
 
@@ -71,11 +64,11 @@ const SimpleInput = props => {
         <input
           type='email'
           id='email'
-          onChange={inputEmailChangeHangler}
-          onBlur={inputEmailBlurHandler}
+          onChange={emailChangeHandler}
+          onBlur={emailBlurHandler}
           value={enteredEmail}
         />
-        {inputEmailIsInvalid && (
+        {inputEmailHasError && (
           <p className='error-text'>Please enter a valid email.</p>
         )}
       </div>
